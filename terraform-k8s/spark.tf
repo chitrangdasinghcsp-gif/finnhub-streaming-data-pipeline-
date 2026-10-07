@@ -1,8 +1,8 @@
 resource "helm_release" "spark-on-k8s" {
-  name       = "spark-on-k8s"
-  repository = "https://googlecloudplatform.github.io/spark-on-k8s-operator"
-  chart      = "spark-operator"
-  namespace  = "spark-operator"
+  name             = "spark-on-k8s"
+  repository       = "https://kubeflow.github.io/spark-operator"
+  chart            = "spark-operator"
+  namespace        = "spark-operator"
   create_namespace = true
 
   set {
@@ -11,50 +11,35 @@ resource "helm_release" "spark-on-k8s" {
   }
 
   set {
-    name  = "webhook.enable"
-    value = true
+    name  = "spark.jobNamespaces[0]"
+    value = "pipeline"
   }
-}
 
-resource "kubernetes_manifest" "service_account" {
-  depends_on = [
-      "kubernetes_namespace.pipeline-namespace"
-  ]
-
-  manifest = {
-    "apiVersion" = "v1"
-    "kind"       = "ServiceAccount"
-    "metadata" = {
-      "name"      = "spark"
-      "namespace" = "${var.namespace}"
-      "labels" = {
-        "app.kubernetes.io/managed-by" = "Helm"
-      }
-      "annotations" = {
-        "meta.helm.sh/release-name" = "spark-on-k8s"
-        "meta.helm.sh/release-namespace" = "spark-operator"
-      }
-    }
+  set {
+    name  = "webhook.enable"
+    value = false
   }
 }
 
 resource "kubernetes_role" "spark_role" {
   metadata {
     name      = "spark-role"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
+
     labels = {
       "app.kubernetes.io/managed-by" = "Helm"
     }
+
     annotations = {
-      "meta.helm.sh/release-name" = "spark-on-k8s"
+      "meta.helm.sh/release-name"      = "spark-on-k8s"
       "meta.helm.sh/release-namespace" = "spark-operator"
     }
   }
 
   depends_on = [
-      "kubernetes_namespace.pipeline-namespace"
+    "kubernetes_namespace.pipeline-namespace"
   ]
-  
+
   rule {
     verbs      = ["*"]
     api_groups = [""]
@@ -71,19 +56,21 @@ resource "kubernetes_role" "spark_role" {
 resource "kubernetes_role_binding" "spark_role_binding" {
   metadata {
     name      = "spark-role-binding"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
+
     labels = {
       "app.kubernetes.io/managed-by" = "Helm"
     }
+
     annotations = {
-      "meta.helm.sh/release-name" = "spark-on-k8s"
+      "meta.helm.sh/release-name"      = "spark-on-k8s"
       "meta.helm.sh/release-namespace" = "spark-operator"
     }
   }
+
   depends_on = [
-      "kubernetes_namespace.pipeline-namespace"
+    "kubernetes_namespace.pipeline-namespace"
   ]
-  
 
   subject {
     kind      = "ServiceAccount"
@@ -97,4 +84,3 @@ resource "kubernetes_role_binding" "spark_role_binding" {
     name      = "spark-role"
   }
 }
-

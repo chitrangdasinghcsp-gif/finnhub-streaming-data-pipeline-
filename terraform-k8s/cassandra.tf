@@ -4,16 +4,16 @@
 
 resource "kubernetes_deployment" "cassandra" {
   metadata {
-    name = "cassandra"
-    namespace = "${var.namespace}"
+    name      = "cassandra"
+    namespace = var.namespace
     labels = {
       "k8s.service" = "cassandra"
     }
   }
 
   depends_on = [
-        "kubernetes_persistent_volume_claim.cassandra-db-volume",
-        "kubernetes_persistent_volume.cassandra-db-volume"
+    "kubernetes_persistent_volume_claim.cassandra-db-volume",
+    "kubernetes_persistent_volume.cassandra-db-volume"
   ]
 
   spec {
@@ -146,8 +146,8 @@ resource "kubernetes_deployment" "cassandra" {
 
 resource "kubernetes_service" "cassandra" {
   metadata {
-    name = "cassandra"
-    namespace = "${var.namespace}"
+    name      = "cassandra"
+    namespace = var.namespace
     labels = {
       "k8s.service" = "cassandra"
     }

@@ -1,14 +1,14 @@
 resource "kubernetes_deployment" "grafana" {
   metadata {
-    name = "grafana"
-    namespace = "${var.namespace}"
+    name      = "grafana"
+    namespace = var.namespace
     labels = {
       "k8s.service" = "grafana"
     }
   }
 
   depends_on = [
-        "kubernetes_deployment.cassandra"
+    "kubernetes_deployment.cassandra"
   ]
 
   spec {
@@ -59,15 +59,15 @@ resource "kubernetes_deployment" "grafana" {
 
 resource "kubernetes_service" "grafana" {
   metadata {
-    name = "grafana"
-    namespace = "${var.namespace}"
+    name      = "grafana"
+    namespace = var.namespace
     labels = {
       "k8s.service" = "grafana"
     }
   }
 
   depends_on = [
-        "kubernetes_deployment.grafana"
+    "kubernetes_deployment.grafana"
   ]
 
   spec {

@@ -5,3 +5,6 @@ terraform-k8s/terraform.tfstate
 terraform-k8s/terraform.tfstate.backup
 terraform-k8s/.terraform.lock.hcl
 
+
+terraform-k8s/terraform.tfstate.*
+terraform-k8s/secrets.tf

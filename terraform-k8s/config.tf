@@ -4,29 +4,29 @@
 
 resource "kubernetes_namespace" "pipeline-namespace" {
   metadata {
-    name = "${var.namespace}"
+    name = var.namespace
   }
 }
 
 resource "kubernetes_config_map" "pipeline-config" {
   metadata {
     name      = "pipeline-config"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 
   depends_on = [
-        "kubernetes_namespace.pipeline-namespace"
+    "kubernetes_namespace.pipeline-namespace"
   ]
 
   data = {
-    FINNHUB_STOCKS_TICKERS        = jsonencode(var.finnhub_stocks_tickers)
-    FINNHUB_VALIDATE_TICKERS      = "1"
-    
-    KAFKA_SERVER                  = "kafka-service.${var.namespace}.svc.cluster.local"
-    KAFKA_PORT                    = "9092"
-    KAFKA_TOPIC_NAME              = "market"
-    KAFKA_MIN_PARTITIONS          = "1"
-    
+    FINNHUB_STOCKS_TICKERS   = jsonencode(var.finnhub_stocks_tickers)
+    FINNHUB_VALIDATE_TICKERS = "1"
+
+    KAFKA_SERVER         = "kafka-service.${var.namespace}.svc.cluster.local"
+    KAFKA_PORT           = "9092"
+    KAFKA_TOPIC_NAME     = "market"
+    KAFKA_MIN_PARTITIONS = "1"
+
     SPARK_MASTER                  = "spark://spark-master:7077"
     SPARK_MAX_OFFSETS_PER_TRIGGER = "100"
     SPARK_SHUFFLE_PARTITIONS      = "2"
@@ -36,12 +36,12 @@ resource "kubernetes_config_map" "pipeline-config" {
 
 resource "kubernetes_network_policy" "pipeline_network" {
   metadata {
-    name = "pipeline-network"
-    namespace = "${var.namespace}"
+    name      = "pipeline-network"
+    namespace = var.namespace
   }
 
   depends_on = [
-        "kubernetes_namespace.pipeline-namespace"
+    "kubernetes_namespace.pipeline-namespace"
   ]
 
   spec {

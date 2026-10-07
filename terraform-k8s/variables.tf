@@ -9,9 +9,9 @@ variable "namespace" {
 }
 
 variable "finnhub_stocks_tickers" {
-  type    = list
-  default = [ "BINANCE:BTCUSDT",
-              "BINANCE:ETHUSDT",
-              "BINANCE:XRPUSDT",
-              "BINANCE:DOGEUSDT" ]
+  type = list(any)
+  default = ["BINANCE:BTCUSDT",
+    "BINANCE:ETHUSDT",
+    "BINANCE:XRPUSDT",
+  "BINANCE:DOGEUSDT"]
 }

@@ -1,15 +1,15 @@
 resource "kubernetes_deployment" "finnhubproducer" {
   metadata {
-    name = "finnhubproducer"
-    namespace = "${var.namespace}"
+    name      = "finnhubproducer"
+    namespace = var.namespace
     labels = {
       "k8s.service" = "finnhubproducer"
     }
   }
 
   depends_on = [
-      "kubernetes_deployment.kafka_service",
-      "kubernetes_deployment.cassandra"
+    "kubernetes_deployment.kafka_service",
+    "kubernetes_deployment.cassandra"
   ]
 
   spec {
@@ -58,17 +58,17 @@ resource "kubernetes_deployment" "finnhubproducer" {
 
 resource "kubernetes_service" "finnhubproducer" {
   metadata {
-    name  = "finnhubproducer"
-    namespace = "${var.namespace}"
+    name      = "finnhubproducer"
+    namespace = var.namespace
     labels = {
       "k8s.service" = "finnhubproducer"
     }
   }
 
   depends_on = [
-        "kubernetes_deployment.finnhubproducer"
+    "kubernetes_deployment.finnhubproducer"
   ]
-  
+
   spec {
     port {
       name        = "8001"

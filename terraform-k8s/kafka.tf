@@ -3,17 +3,17 @@
 
 resource "kubernetes_deployment" "zookeeper" {
   metadata {
-    name = "zookeeper"
-    namespace = "${var.namespace}"
+    name      = "zookeeper"
+    namespace = var.namespace
     labels = {
       "k8s.service" = "zookeeper"
     }
   }
 
   depends_on = [
-        "kubernetes_namespace.pipeline-namespace"
+    "kubernetes_namespace.pipeline-namespace"
   ]
-  
+
   spec {
     replicas = 1
 
@@ -51,7 +51,7 @@ resource "kubernetes_deployment" "zookeeper" {
             value = "2000"
           }
         }
-        
+
         restart_policy = "Always"
       }
     }
@@ -60,17 +60,17 @@ resource "kubernetes_deployment" "zookeeper" {
 
 resource "kubernetes_deployment" "kafka_service" {
   metadata {
-    name = "kafka-service"
-    namespace = "${var.namespace}"
+    name      = "kafka-service"
+    namespace = var.namespace
     labels = {
       "k8s.service" = "kafka"
     }
   }
 
   depends_on = [
-        "kubernetes_deployment.zookeeper",
-        "kubernetes_persistent_volume_claim.kafka-volume",
-        "kubernetes_persistent_volume.kafka-volume"
+    "kubernetes_deployment.zookeeper",
+    "kubernetes_persistent_volume_claim.kafka-volume",
+    "kubernetes_persistent_volume.kafka-volume"
   ]
 
   spec {
@@ -203,7 +203,7 @@ resource "kubernetes_deployment" "kafka_service" {
         }
 
         restart_policy = "Always"
-        hostname = "kafka-service"
+        hostname       = "kafka-service"
       }
     }
   }
@@ -211,15 +211,15 @@ resource "kubernetes_deployment" "kafka_service" {
 
 resource "kubernetes_service" "zookeeper" {
   metadata {
-    name = "zookeeper"
-    namespace = "${var.namespace}"
+    name      = "zookeeper"
+    namespace = var.namespace
     labels = {
       "k8s.service" = "zookeeper"
     }
   }
 
   depends_on = [
-        "kubernetes_deployment.zookeeper"
+    "kubernetes_deployment.zookeeper"
   ]
 
   spec {
@@ -239,15 +239,15 @@ resource "kubernetes_service" "zookeeper" {
 
 resource "kubernetes_service" "kafka_service" {
   metadata {
-    name = "kafka-service"
-    namespace = "${var.namespace}"
+    name      = "kafka-service"
+    namespace = var.namespace
     labels = {
       "k8s.service" = "kafka"
     }
   }
 
   depends_on = [
-        "kubernetes_deployment.kafka_service"
+    "kubernetes_deployment.kafka_service"
   ]
 
   spec {
